@@ -44,7 +44,7 @@ public:
 
     std::string relation(std::string name);
     Node* findNodeName(std::string name,Node* node);
-    Node* help(std::string name,Node* root);
+    Node* help(Node* name,Node* name2,int counter,std::string f) ;
     std::string find(std::string relation);
     void remove(std::string name);
 

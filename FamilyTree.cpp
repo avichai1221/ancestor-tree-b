@@ -159,11 +159,56 @@ namespace family {
     }
 
 
-    Node* Tree::help(string name,Node* temp) {
-        return temp;
+    Node* Tree::help(Node* root,Node* root2,int counter,string fORm)
+        {
+            // Base Cases: root is null or key is present at root
+            if (HighRecursive(root->name,root2,0)==counter&&root->rank==fORm)
+                return root;
+
+                if(root->father!= nullptr)
+                  return help(root->father,root2,counter,fORm);
+
+                  if(root->mother!= nullptr)
+                  return help(root->mother,root2,counter,fORm);
+
+                 // cout<<root->rank<<root->name<<endl<<HighRecursive(root->name,root2,0)<<endl;
+
+
+            /*    if(HighRecursive(root->name,root,0)==counter&&root->rank==fORm)
+                    return root->name;
+                if(root->father!= nullptr)
+                  help(root->father,root2,counter,fORm);
+
+                  if(root->mother!= nullptr)
+                  help(root->mother,root2,counter,fORm);
+
+                 // cout<<root->rank<<root->name<<endl<<HighRecursive(root->name,root2,0)<<endl;
+          */
+
     }
 
-//The function returns the reference between the input and root.
+/*
+    void printPostorder(struct Node* node)
+    {
+        if (node == NULL)
+            return;
+
+        // first recur on left subtree
+        printPostorder(node->left);
+
+        // then recur on right subtree
+        printPostorder(node->right);
+
+        // now deal with the node
+        cout << node->data << " ";
+    }*/
+
+
+
+
+
+
+    //The function returns the reference between the input and root.
     string Tree::relation(string name)
     {
         string ans = "";
@@ -214,26 +259,76 @@ if(root!= nullptr)
 
         return findNodeName(name,node->mother);
     }
-   /* string Tree:: relation(string name)
-    {
-
-        if(root->name==name)
-            cout <<root->rank;;
-
-       Node* node=findNodeName(name,root);
-        if(node!=NULL&&node->name==name)
-            cout << node->rank<< " ";
-        else
-            cout << "unrelated" << " ";
-    }*/
-
 
 
 
         string Tree::find(string relation)
         {
-            return "Dsds";
+            if(relation=="me")
+            {
+                if (root!= nullptr) return root->name;
+                else  throw invalid_argument("no root");
+            }
+
+        else if(relation=="mother")
+            {
+            if (root!= nullptr&&root->mother!= nullptr)
+            return root->mother->name;
+            else  throw invalid_argument("no mother");
+            }
+
+        else if(relation=="father")
+        {
+                if (root != nullptr && root->father != nullptr)
+                    return root->father->name;
+                else throw invalid_argument("no mother");
         }
+        else if(relation=="grandfather")
+        {
+        if(root != nullptr && root->father != nullptr && root->father->father!= nullptr)
+         return root->father->father->name;
+        else if (root != nullptr && root->mother != nullptr && root->mother->father!= nullptr)
+            return root->mother->father->name;
+        else throw invalid_argument("no grandfather");
+        }
+            else if(relation=="grandmother")
+            {
+                if(root != nullptr && root->father != nullptr && root->father->mother!= nullptr)
+                    return root->father->mother->name;
+                else if (root != nullptr && root->mother != nullptr && root->mother->mother!= nullptr)
+                    return root->mother->mother->name;
+                else throw invalid_argument("no grandmother");
+            }
+            else
+            {
+                string fORm="";
+                int counter=2,saveLast=0;
+                for(int i=0; i<relation.length();i++)
+                {
+                   if(relation.at(i)=='-')
+                   {
+                       counter++;
+                       saveLast=i;
+                   }
+                }
+                if (relation.at(saveLast+6)=='f') fORm="father";
+                else fORm="mother";
+                    Node* ans = help(root,root, counter, fORm);
+
+
+                return ans->name;
+
+            }
+        }
+
+
+
+
+
+
+
+
+
         void Tree::remove(string name)
         {
 
