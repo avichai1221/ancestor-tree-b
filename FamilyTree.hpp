@@ -1,57 +1,54 @@
-//
-// Created by avichai on 4/6/20.
-//
-
-/*#ifndef CPPMATALA_FAMILYTREE_HPP
-#define CPPMATALA_FAMILYTREE_HPP
-
-#endif //CPPMATALA_FAMILYTREE_HPP*/
-#include <stdbool.h>
 #include <iostream>
-
-namespace family{
-
-class Node{
-public:
-    std::string name;
-    Node* mother;
-    Node* father;
-    std::string rank;
-
-//constractor+destractor
-
-        Node (std::string root);
-        ~Node();
-
-};
-
-class Tree{
-
-public:
-    Node* root;
-    int counter;
+#include <stdexcept>
+using namespace std;
 
 
-    Tree& addFather(std::string son,std::string father);
-    void searchFather(std::string son,std::string father,Node* root);
-    void searchMother(std::string son,std::string mother,Node* root);
-    Tree& addMother(std::string son,std::string mother);
-    int HighRecursive(std::string name, Node* node,int level);
-    void display();
-    void print(Node* root, int level);
+namespace family {
 
+    class Tree {
 
+    private:
+        struct treenode {
+            string name;
+            string rank;
+            treenode *left;
+            treenode *right;
+        };
 
-    std::string relation(std::string name);
-    Node* findNodeName(std::string name,Node* node);
-    Node* help(Node* name,Node* name2,int counter,std::string f) ;
-    std::string find(std::string relation);
-    void remove(std::string name);
+        treenode *root;
 
-//constractor+destractor
+        bool equal(string a, string b);
 
-Tree (std::string root);
-~Tree();
+        void addFatherRecursive(string child, string father, treenode *node);
+
+        void addMotherRecursive(string child, string mother, treenode *node);
+
+        void printpostorderprivate(treenode *node);
+
+        treenode *findNodeName(string name, treenode *node);
+
+        void DeleteNodeAndChildrean(treenode *node);
+
+        treenode *findNodeRank(string name, treenode *node);
+
+    public:
+        Tree(string name);
+
+        treenode *creatNode(string name);
+
+        int HighRecursive(string name, treenode *node, int level);
+
+        Tree &addFather(string child, string father);
+
+        Tree &addMother(string child, string mother);
+
+        void printPostorder();
+
+        string relation(string name);
+
+        void remove(string name);
+
+        string find(string name);
 
     };
 };

@@ -1,354 +1,228 @@
-//
-// Created by avichai on 4/6/20.
-//
-
-#include "FamilyTree.hpp"
+#include <iostream>
+#include <stdexcept>
+#include"FamilyTree.hpp"
 using namespace std;
+
+
+
+
 namespace family {
 
+    Tree::treenode *Tree::creatNode(string name) {
+        treenode *n = new treenode;
+        n->name = name;
+        n->left = NULL;
+        n->right = NULL;
+        return n;
+    }
 
-    Tree::Tree(string root) {
-        this->root = new Node(root);
-        this->counter = 1;
+    Tree::Tree(string Name) {
+        root = creatNode(Name);
+        root->rank = "me";
+    }
 
+    bool Tree::equal(string a, string b) {
+        if (a.length() != b.length())
+            return false;
+        for (int i = 0; i < a.length(); i++) {
+            if (a[i] != b[i])
+                return false;
+
+        }
+        return true;
     }
 
 
-    Tree::~Tree() {
-        delete this->root;
-    }
-
-    //tree high
-    int Tree::HighRecursive(string name, Node *node, int level)
-    {
-        if (node == nullptr)
+    int Tree::HighRecursive(string name, treenode *node, int level) {
+        if (node == NULL)
             return 0;
-        if (node->name == name)
+        if (equal(node->name, name))
             return level;
 
-        int downlevel = HighRecursive(name, node->father, level + 1);
+        int downlevel = HighRecursive(name, node->left, level + 1);
 
         if (downlevel != 0)
             return downlevel;
 
-        downlevel = HighRecursive(name, node->mother, level + 1);
+        downlevel = HighRecursive(name, node->right, level + 1);
 
         return downlevel;
     }
 
-    void Tree::searchFather(string son, string father, Node *root)
-    {
+    void Tree::addFatherRecursive(string child, string father, treenode *node) {
 
-        if (root == nullptr)
-            return ;
-        else
-            {
-
-            if (root->name == son) // we found the son
-            {
-                if (root->father == nullptr) // No father, so add
-                {
-                    root->father = new Node(father);
+        if (node == NULL)
+            return;
+        if (node != NULL) {
+            if (node->name != "" && equal(node->name, child)) {
+                if (node->left == NULL) {
+                    node->left = creatNode(father);
                     int level = 0;
-                  //  int num = HighRecursive(father, root, level);
-                        root->father->rank = "father";
-                    /*if (num == 2)
-                        root->father->rank = "grandfather";
+                    int num = HighRecursive(father, root, level);
+                    if (num == 1)
+                        node->left->rank = "father";
+                    if (num == 2)
+                        node->left->rank = "grandfather";
                     if (num > 2) {
 
                         for (int i = 2; i < num; i++) {
-                            root->father->rank = root->father->rank + "great-";
+                            node->left->rank = node->left->rank + "great-";
                         }
-                        root->father->rank = root->father->rank + "grandfather";
-                    }*/
-                    counter++;
-                } else   //have a father so replace
-                {
-                    root->father->name = father;
-                    root->father->rank = "father";
-                    counter++;
+                        node->left->rank = node->left->rank + "grandfather";
+                    }
                 }
+            }
 
-            }
-            else {
-                searchFather(son, father, root->father);
-                searchFather(son, father, root->mother);
-            }
         }
 
+        addFatherRecursive(child, father, node->left);
+        addFatherRecursive(child, father, node->right);
     }
 
-    Tree &Tree::addFather(string son, string father)
-    {
-        searchFather(son,father,root);
-        return *this;
 
-    }
+    void Tree::addMotherRecursive(string child, string mother, treenode *node) {
 
-    void Tree::searchMother(string son,string mother,Node* root)
-    {
-        if(root==nullptr)
+        if (node == NULL)
             return;
-        else
-        {
-            if (root->name == son) // we found the son
-            {
-                if (root->mother == nullptr) // No mother, so add
-                {
-                    root->mother = new Node(mother);
-                  //  int level = 0;
-                  //  int num = HighRecursive(mother, root, level);
-                   // if (num == 1)
-                        root->mother->rank = "mother";
-                    /*if (num == 2)
-                        root->mother->rank = "grandmother";
+        if (node != NULL) {
+            if (node->name != "" && equal(node->name, child)) {
+                if (node->right == NULL) {
+                    node->right = creatNode(mother);
+                    int level = 0;
+                    int num = HighRecursive(mother, root, level);
+
+                    if (num == 1)
+                        node->right->rank = "mother";
+                    if (num == 2)
+                        node->right->rank = "grandmother";
                     if (num > 2) {
 
                         for (int i = 2; i < num; i++) {
-                            root->mother->rank = root->mother->rank + "great-";
+                            node->right->rank = node->right->rank + "great-";
                         }
-                        root->mother->rank = root->mother->rank + "grandmother";*/
-                   // }
-                    counter++;
-                } else   //have a mother so replace
-                {
-                    root->mother->name = mother;
-                    root->mother->rank = "mother";
-                    counter++;
+                        node->right->rank = node->right->rank + "grandmother";
+                    }
+
                 }
             }
-            searchMother(son, mother, root->father);
-            searchMother(son, mother, root->mother);
-
-               }
-
-    }
-
-    Tree &Tree::addMother(string son, string mother)
-    {
-        searchMother(son,mother,root);
-        return *this;
-    }
-
-
-    void Tree::display() //help from geeksforgeeks
-    {
-        cout << "notice! the mothers is up and fathers is down!" << endl;
-        // Root without spaces
-        print(root, 0);
-    }
-    void Tree::print(Node* root, int space) //Print (right,root,left)--> (mather,child,father)
-    {
-    if (root == NULL) // Nothing to print
-    return;
-
-    //  For know how much space to take (We want it be clear for show)
-    space =space+ counter;
-
-    // mother first
-        print(root->mother, space);
-
-
-    cout<<endl;
-    for (int i = counter; i < space; i++)
-    cout<<" ";
-    cout<<root->name<<"\n\n";
-
-    // father
-        print(root->father, space);
-    }
-
-
-    Node* Tree::help(Node* root,Node* root2,int counter,string fORm)
-        {
-            // Base Cases: root is null or key is present at root
-            if (HighRecursive(root->name,root2,0)==counter&&root->rank==fORm)
-                return root;
-
-                if(root->father!= nullptr)
-                  return help(root->father,root2,counter,fORm);
-
-                  if(root->mother!= nullptr)
-                  return help(root->mother,root2,counter,fORm);
-
-                 // cout<<root->rank<<root->name<<endl<<HighRecursive(root->name,root2,0)<<endl;
-
-
-            /*    if(HighRecursive(root->name,root,0)==counter&&root->rank==fORm)
-                    return root->name;
-                if(root->father!= nullptr)
-                  help(root->father,root2,counter,fORm);
-
-                  if(root->mother!= nullptr)
-                  help(root->mother,root2,counter,fORm);
-
-                 // cout<<root->rank<<root->name<<endl<<HighRecursive(root->name,root2,0)<<endl;
-          */
+        }
+        addMotherRecursive(child, mother, node->left);
+        addMotherRecursive(child, mother, node->right);
 
     }
 
-/*
-    void printPostorder(struct Node* node)
-    {
+
+    Tree::treenode *Tree::findNodeName(string name, treenode *node) {
+        if (node == NULL)
+            return NULL;
+        if (node != NULL && equal(node->name, name))
+            return node;
+
+        treenode *found = findNodeName(name, node->left);
+
+        if (found != NULL)
+            return found;
+
+        return findNodeName(name, node->right);
+    }
+
+
+    Tree::treenode *Tree::findNodeRank(string name, treenode *node) {
+        if (node == NULL)
+            return NULL;
+
+        if (equal(node->rank, name))
+            return node;
+
+        treenode *found = findNodeRank(name, node->left);
+
+        if (found != NULL)
+            return found;
+
+        return findNodeRank(name, node->right);
+    }
+
+
+    void Tree::DeleteNodeAndChildrean(treenode *node) {
         if (node == NULL)
             return;
 
-        // first recur on left subtree
-        printPostorder(node->left);
-
-        // then recur on right subtree
-        printPostorder(node->right);
-
-        // now deal with the node
-        cout << node->data << " ";
-    }*/
+        DeleteNodeAndChildrean(node->left);
+        DeleteNodeAndChildrean(node->right);
 
 
+        if (node != NULL) {
 
-
-
-
-    //The function returns the reference between the input and root.
-    string Tree::relation(string name)
-    {
-        string ans = "";
-
-if(root!= nullptr)
-{
-    if(root->name==name) ans= "me";
-    else if(root->mother!= nullptr&&root->mother->name==name) ans="mother";
-    else if(root->father->name==name) ans="father";
-    else if((root->mother->mother!= nullptr&&root->mother->mother->name==name)||(root->father->mother!= nullptr&&root->father->mother->name==name)) ans="grandmother";
-    else if((root->mother->father!= nullptr&&root->mother->father->name==name)||(root->father->father!= nullptr&&root->father->father->name==name)) ans="grandfather";
-    else
-        {
-              int num = HighRecursive(name, root, 0);
-              if(num==0) ans="unrelated"; //no name like this
-            if (num > 2)
-            {
-                for (int i = 2; i < num; i++)
-                {
-                    ans="great-"+ans;
-                }
-                Node* help=findNodeName(name,root);
-                if(help->rank=="mother")
-               ans=ans+"grandmother";
-                else ans=ans+"grandfather";
-             }
+            node->left = NULL;
+            node->right = NULL;
+            node->name = "";
+            node->rank = "";
+            delete node;
+        }
 
 
     }
 
-}
+    Tree &Tree::addFather(string child, string father) {
 
-            return ans;
+        addFatherRecursive(child, father, root);
+        return *this;
+
     }
 
 
-    Node* Tree:: findNodeName(string name,Node* node)
-    {
-        if(node==nullptr)
-            return nullptr;
-        if(node->name==name)
-            return node;
+    Tree &Tree::addMother(string child, string mother) {
 
-        Node* found=findNodeName(name,node->father);
+        addMotherRecursive(child, mother, root);
+        return *this;
+    }
 
-        if(found!=nullptr)
-            return found;
+    string Tree::relation(string name) {
 
-        return findNodeName(name,node->mother);
+        string s = "unrelated";
+        if (equal(root->name, name))
+            return root->rank;
+
+        treenode *node = findNodeName(name, root);
+        if (node != NULL && equal(node->name, name))
+            return node->rank;
+        else
+            return s;
     }
 
 
+    void Tree::remove(string name) {
+        treenode *node = findNodeName(name, root);
 
-        string Tree::find(string relation)
-        {
-            if(relation=="me")
-            {
-                if (root!= nullptr) return root->name;
-                else  throw invalid_argument("no root");
+        DeleteNodeAndChildrean(node);
+
+    }
+
+    string Tree::find(string name) {
+        treenode *node = findNodeRank(name, root);
+        if (node==NULL) throw invalid_argument("no relation");
+        return node->name;
+
+    }
+
+    void Tree::printpostorderprivate(treenode *ptr) {
+        if (ptr != NULL) {
+            if (ptr->left != NULL) {
+                printpostorderprivate(ptr->left);
+            }
+            cout << ptr->name << " ";
+
+            if (ptr->right != NULL) {
+                printpostorderprivate(ptr->right);
             }
 
-        else if(relation=="mother")
-            {
-            if (root!= nullptr&&root->mother!= nullptr)
-            return root->mother->name;
-            else  throw invalid_argument("no mother");
-            }
+        } else
+            cout << "emty" << " ";
+    }
 
-        else if(relation=="father")
-        {
-                if (root != nullptr && root->father != nullptr)
-                    return root->father->name;
-                else throw invalid_argument("no mother");
-        }
-        else if(relation=="grandfather")
-        {
-        if(root != nullptr && root->father != nullptr && root->father->father!= nullptr)
-         return root->father->father->name;
-        else if (root != nullptr && root->mother != nullptr && root->mother->father!= nullptr)
-            return root->mother->father->name;
-        else throw invalid_argument("no grandfather");
-        }
-            else if(relation=="grandmother")
-            {
-                if(root != nullptr && root->father != nullptr && root->father->mother!= nullptr)
-                    return root->father->mother->name;
-                else if (root != nullptr && root->mother != nullptr && root->mother->mother!= nullptr)
-                    return root->mother->mother->name;
-                else throw invalid_argument("no grandmother");
-            }
-            else
-            {
-                string fORm="";
-                int counter=2,saveLast=0;
-                for(int i=0; i<relation.length();i++)
-                {
-                   if(relation.at(i)=='-')
-                   {
-                       counter++;
-                       saveLast=i;
-                   }
-                }
-                if (relation.at(saveLast+6)=='f') fORm="father";
-                else fORm="mother";
-                    Node* ans = help(root,root, counter, fORm);
+    void Tree::printPostorder() {
 
+        printpostorderprivate(root);
 
-                return ans->name;
-
-            }
-        }
-
-
-
-
-
-
-
-
-
-        void Tree::remove(string name)
-        {
-
-
-        }
-
-
-    Node::Node(std::string root)
-        {
-            name = root;
-            mother = NULL;
-            father = NULL;
-            rank ="me";
-
-        }
-        Node::~Node()
-        {
-            delete mother;
-            delete father;
-        }
-
-
-    };
+    }
+};
