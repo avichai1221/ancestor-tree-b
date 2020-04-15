@@ -7,18 +7,39 @@ using namespace std;
 
 
 namespace family {
+/*
 
-    Tree::treenode *Tree::creatNode(string name) {
+    treenode *Tree::creatNode(string name) {
         treenode *n = new treenode;
         n->name = name;
         n->left = NULL;
         n->right = NULL;
         return n;
     }
+*/
+
+    treenode::treenode(std::string root)
+    {
+        name = root;
+        right = NULL;
+        left = NULL;
+        rank ="";
+
+    }
+    treenode::~treenode()
+    {
+        delete right;
+        delete left;
+    }
 
     Tree::Tree(string Name) {
-        root = creatNode(Name);
+        root = new treenode(Name);
         root->rank = "me";
+        counter = 1;
+    }
+
+    Tree::~Tree() {
+        delete root;
     }
 
     bool Tree::equal(string a, string b) {
@@ -55,8 +76,9 @@ namespace family {
             return;
         if (node != NULL) {
             if (node->name != "" && equal(node->name, child)) {
+                counter++;
                 if (node->left == NULL) {
-                    node->left = creatNode(father);
+                    node->left = new treenode(father);
                     int level = 0;
                     int num = HighRecursive(father, root, level);
                     if (num == 1)
@@ -86,8 +108,9 @@ namespace family {
             return;
         if (node != NULL) {
             if (node->name != "" && equal(node->name, child)) {
+                counter++;
                 if (node->right == NULL) {
-                    node->right = creatNode(mother);
+                    node->right =  new treenode(mother);
                     int level = 0;
                     int num = HighRecursive(mother, root, level);
 
@@ -112,7 +135,7 @@ namespace family {
     }
 
 
-    Tree::treenode *Tree::findNodeName(string name, treenode *node) {
+    treenode *Tree::findNodeName(string name, treenode *node) {
         if (node == NULL)
             return NULL;
         if (node != NULL && equal(node->name, name))
@@ -127,7 +150,7 @@ namespace family {
     }
 
 
-    Tree::treenode *Tree::findNodeRank(string name, treenode *node) {
+    treenode *Tree::findNodeRank(string name, treenode *node) {
         if (node == NULL)
             return NULL;
 
@@ -147,6 +170,8 @@ namespace family {
         if (node == NULL)
             return;
 
+
+
         DeleteNodeAndChildrean(node->left);
         DeleteNodeAndChildrean(node->right);
 
@@ -157,12 +182,40 @@ namespace family {
             node->right = NULL;
             node->name = "";
             node->rank = "";
-            delete node;
-        }
+           // delete node;
 
+
+
+        }
 
     }
 
+    void Tree::display() //help from geeksforgeeks
+    {
+        cout << "notice! the mothers is up and fathers is down!" << endl;
+        // Root without spaces
+        print(root, 0);
+    }
+    void Tree::print(treenode* root, int space) //Print (right,root,left)--> (mather,child,father)
+    {
+        if (root == NULL) // Nothing to print
+            return;
+
+        //  For know how much space to take (We want it be clear for show)
+        space =space+ counter;
+
+        // mother first
+        print(root->right, space);
+
+
+        cout<<endl;
+        for (int i = counter; i < space; i++)
+            cout<<" ";
+        cout<<root->name<<"\n\n";
+
+        // father
+        print(root->left, space);
+    }
     Tree &Tree::addFather(string child, string father) {
 
         addFatherRecursive(child, father, root);
@@ -192,8 +245,9 @@ namespace family {
 
 
     void Tree::remove(string name) {
+        if (root->name==name) throw invalid_argument("cant remove");
         treenode *node = findNodeName(name, root);
-
+if(node==NULL) throw invalid_argument("cant remove");
         DeleteNodeAndChildrean(node);
 
     }
@@ -205,7 +259,7 @@ namespace family {
 
     }
 
-    void Tree::printpostorderprivate(treenode *ptr) {
+   /* void Tree::printpostorderprivate(treenode *ptr) {
         if (ptr != NULL) {
             if (ptr->left != NULL) {
                 printpostorderprivate(ptr->left);
@@ -219,10 +273,10 @@ namespace family {
         } else
             cout << "emty" << " ";
     }
-
-    void Tree::printPostorder() {
+*/
+   /* void Tree::printPostorder() {
 
         printpostorderprivate(root);
 
-    }
+    }*/
 };

@@ -43,8 +43,6 @@ CHECK(T.relation("Yosef") == string("great-grandfather"));
 CHECK(T.relation("Zlil") == string("great-grandmother"));
 CHECK(T.relation("Ziva") == string("great-great-grandmother"));
 CHECK(T.relation("Yona") == string("great-great-great-grandmother"));
-
-
 CHECK(T.find("me") == string("Avi"));
 CHECK(T.find("father") == string("Gadi"));
 //     CHECK(T.find("grandfather") == string.containsAny("a", "b", "c");
@@ -74,8 +72,8 @@ T.addFather("Avi", "Michael");
 CHECK(T.find("great-great-grandfather") == string("Didi"));
 CHECK(T.find("great-great-great-grandfather") == string("Gigi"));
 CHECK(T.find("father") == string("Gadi"));
-CHECK(T.relation("great-great-grandfather") == string("Didi"));
-CHECK(T.relation("great-great-great-grandfather") == string("Gigi"));
+CHECK(T.relation("Didi") == string("great-great-grandfather"));
+CHECK(T.relation("Gigi") == string("great-great-great-grandfather"));
 CHECK(T.relation("Michael") == string("unrelated"));
 
 }
@@ -96,7 +94,9 @@ T2.addFather("Avi", "Gadi")
 .addMother("Dan", "Ronit")
 .addFather("Dina", "Yosef")
 .addMother("Dina", "Zlil").addMother("Zlil", "Ziva").addMother("Ziva", "Yona");
-
+CHECK(T2.relation("Natasha") == string("unrelated"));
+CHECK(T2.relation("Thor") == string("unrelated"));
+CHECK(T2.relation("Brus") == string("unrelated"));
 CHECK(T2.relation("Avi") == string("me"));
 CHECK(T2.relation("Gadi") == string("father"));
 CHECK(T2.relation("Ben") == string("grandfather"));
@@ -117,43 +117,45 @@ CHECK(T2.relation("Dan") == string("grandfather"));
 CHECK(T2.relation("Zlil") == string("great-grandmother"));
 T2.remove("Zlil");
 CHECK(T2.relation("Zlil") == string("unrelated"));
+
 T2.addFather("Avi", "NewFather").addFather("NewFather", "Ben").addMother("NewFather", "Rina").addFather("Ben", "Ron")
 .addMother("Ben", "Riki")
 .addFather("Rina", "Yosi").addMother("Rina", "Mika");
-CHECK(T2.relation("NewFather") == string("father"));
-CHECK(T2.find("father") == string("NewFather"));
-CHECK(T2.relation("Ben") == string("grandfather"));
-CHECK(T2.relation("Rina") == string("grandmother"));
-CHECK(T2.relation("Ron") == string("great-grandfather"));
-CHECK(T2.relation("Riki") == string("great-grandmother"));
-CHECK(T2.relation("Yosi") == string("great-grandfather"));
-CHECK(T2.relation("Mika") == string("great-grandmother"));
-CHECK(T2.relation("Ziva") == string("great-great-grandmother"));
-CHECK(T2.relation("Yona") == string("great-great-great-grandmother"));
-T2.remove("Yona");
+
+CHECK(T2.relation("NewFather") == string("unrelated"));
+CHECK_THROWS(T2.find("father"));
+CHECK(T2.relation("Ben") == string("unrelated"));
+CHECK(T2.relation("Rina") == string("unrelated"));
+CHECK(T2.relation("Ron") == string("unrelated"));
+CHECK(T2.relation("Riki") == string("unrelated"));
+CHECK(T2.relation("Yosi") == string("unrelated"));
+CHECK(T2.relation("Mika") == string("unrelated"));
+CHECK(T2.relation("Ziva") == string("unrelated"));
+CHECK(T2.relation("Yona") == string("unrelated")); //////////////////69
+
 CHECK(T2.relation("Ziva") == string("unrelated"));
 CHECK(T2.relation("Yona") == string("unrelated"));
 CHECK_THROWS(T2.remove("Ziva"));
 CHECK_THROWS(T2.remove("Yona"));
 T2.addMother("Avi", "Or");
-CHECK_THROWS(T2.remove("Gila"));
+CHECK_THROWS(T2.remove("Or"));
 CHECK(T2.find("mother") == string("Gila"));
 CHECK(T2.relation("Gila") == string("mother"));
 CHECK(T2.relation("Dan") == string("grandfather"));
 CHECK(T2.relation("Dina") == string("grandmother"));
-T2.remove("Or");
-CHECK(T2.relation("Yosef") == string("unrelated"));
-CHECK(T2.relation("Eli") == string("unrelated"));
-CHECK(T2.relation("Ronit") == string("unrelated"));
+
+CHECK(T2.relation("Yosef") == string("great-grandfather"));
+CHECK(T2.relation("Eli") == string("great-grandfather"));
+CHECK(T2.relation("Ronit") == string("great-grandmother"));
 CHECK_THROWS(T2.remove("Zlil"));
-CHECK_THROWS(T2.remove("Dina"));
-CHECK_THROWS(T2.remove("Yosef"));
+CHECK_THROWS(T2.remove("Dinaa"));
+CHECK_THROWS(T2.remove("Milka"));
 CHECK_THROWS(T2.remove("Or"));
 CHECK_THROWS(T2.remove("aaa"));
 CHECK_THROWS(T2.remove("bbb"));
 CHECK(T2.relation("Or") == string("unrelated"));
 CHECK(T2.relation("Avi") == string("me"));
-CHECK(T2.find("father") == string("NewFather"));
+CHECK_THROWS(T2.find("father"));
 CHECK(T2.find("me") == string("Avi"));
 CHECK_THROWS(T2.find("great-great-great-great-great-grandmother"));
 CHECK_THROWS(T2.find("great-great-great-great-great-grandfather"));
@@ -161,9 +163,7 @@ CHECK_THROWS(T2.find("great-great-great-great-great-great-great-great-grandfathe
 CHECK_THROWS(T2.find("great-great-great-great-great-great-grandfather"));
 CHECK_THROWS(T2.find("great-great-great-great-great-great-great-great-great-great-great-grandfather"));
 CHECK_THROWS(T2.find("great-great-great-great-great-great-great-great-grandmother"));
-CHECK(T2.relation("Natasha") == string("unrelated"));
-CHECK(T2.relation("Thor") == string("unrelated"));
-CHECK(T2.relation("Brus") == string("unrelated"));
+
 
 
 }

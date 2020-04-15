@@ -5,25 +5,32 @@ using namespace std;
 
 namespace family {
 
+    class treenode {
+    public:
+        string name;
+        string rank;
+        treenode *left;
+        treenode *right;
+
+        //constractor+destractor
+
+        treenode (std::string root);
+        ~treenode();
+
+    };
     class Tree {
 
-    private:
-        struct treenode {
-            string name;
-            string rank;
-            treenode *left;
-            treenode *right;
-        };
+    public:
 
+        int counter;
         treenode *root;
-
         bool equal(string a, string b);
 
         void addFatherRecursive(string child, string father, treenode *node);
 
         void addMotherRecursive(string child, string mother, treenode *node);
 
-        void printpostorderprivate(treenode *node);
+  //      void printpostorderprivate(treenode *node);
 
         treenode *findNodeName(string name, treenode *node);
 
@@ -33,8 +40,10 @@ namespace family {
 
     public:
         Tree(string name);
-
-        treenode *creatNode(string name);
+       // treenode *creatNode(string name);
+       void display();
+        void print(treenode* root, int level);
+        ~Tree();
 
         int HighRecursive(string name, treenode *node, int level);
 
@@ -42,7 +51,7 @@ namespace family {
 
         Tree &addMother(string child, string mother);
 
-        void printPostorder();
+  //      void printPostorder();
 
         string relation(string name);
 
