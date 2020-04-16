@@ -92,7 +92,7 @@ namespace family {
                         }
                         node->left->rank = node->left->rank + "grandfather";
                     }
-                }
+                }else throw invalid_argument("wrong");
             }
 
         }
@@ -126,7 +126,7 @@ namespace family {
                         node->right->rank = node->right->rank + "grandmother";
                     }
 
-                }else throw invalid_argument("cant remove");
+                }else throw invalid_argument("wrong");
             }
         }
         addMotherRecursive(child, mother, node->left);
