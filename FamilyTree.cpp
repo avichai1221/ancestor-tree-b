@@ -95,7 +95,7 @@ namespace family {
                 }else throw invalid_argument("wrong");
             }
 
-        }throw invalid_argument("wrong");
+        }
 
         addFatherRecursive(child, father, node->left);
         addFatherRecursive(child, father, node->right);
