@@ -126,7 +126,7 @@ namespace family {
                         node->right->rank = node->right->rank + "grandmother";
                     }
 
-                }
+                }else throw invalid_argument("cant remove");
             }
         }
         addMotherRecursive(child, mother, node->left);
