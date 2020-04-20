@@ -94,11 +94,11 @@ namespace family {
                     }
                 }else throw invalid_argument("wrong");
             }
-
         }
 
         addFatherRecursive(child, father, node->left);
         addFatherRecursive(child, father, node->right);
+
     }
 
 
@@ -216,9 +216,61 @@ namespace family {
         // father
         print(root->left, space);
     }
-    Tree &Tree::addFather(string child, string father) {
+    bool Tree:: cheakIfFatherExist(string child,treenode* node)
+    {
 
-        addFatherRecursive(child, father, root);
+        if (node == NULL)
+            return false;
+
+        if (equal(node->name,child))
+        {
+            if(node->left==NULL)
+                return true;
+        }
+
+
+
+        bool ans1 = cheakIfFatherExist(child, node->left);
+
+        if(ans1)
+            return true;
+
+
+        bool ans2 = cheakIfFatherExist(child, node->right);
+
+        return ans2;
+    }
+
+    bool Tree:: cheakIfMotherExist(string child,treenode* node)
+    {
+
+        if (node == NULL)
+            return false;
+
+        if (equal(node->name,child))
+        {
+            if(node->right==NULL)
+                return true;
+        }
+
+
+
+        bool ans1 = cheakIfMotherExist(child, node->left);
+
+        if(ans1)
+            return true;
+
+
+        bool ans2 = cheakIfMotherExist(child, node->right);
+
+        return ans2;
+    }
+    Tree &Tree::addFather(string child, string father) {
+        if(cheakIfFatherExist(child,root))
+            addFatherRecursive(child, father, root);
+                else
+        throw std::runtime_error("we have a father for this child");
+
         return *this;
 
     }
@@ -226,7 +278,10 @@ namespace family {
 
     Tree &Tree::addMother(string child, string mother) {
 
+            if(cheakIfMotherExist(child,root))
         addMotherRecursive(child, mother, root);
+            else
+                throw std::runtime_error("we have a mother for this child");
         return *this;
     }
 

@@ -51,6 +51,9 @@ namespace family {
 
         Tree &addMother(string child, string mother);
 
+        bool cheakIfMotherExist(string child,treenode* node);
+
+        bool cheakIfFatherExist(string child,treenode* node);
   //      void printPostorder();
 
         string relation(string name);
