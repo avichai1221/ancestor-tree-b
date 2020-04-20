@@ -166,31 +166,7 @@ namespace family {
     }
 
 
-    void Tree::DeleteNodeAndChildrean(treenode *node) {
-        if (node == NULL)
-            return;
 
-
-
-        DeleteNodeAndChildrean(node->left);
-        DeleteNodeAndChildrean(node->right);
-
-
-        if (node != NULL) {
-
-             delete node->left;
-            delete node->right;
-            node->left = NULL;
-            node->right = NULL;
-            node->name = "";
-            node->rank = "";
-           // delete node;
-
-
-
-        }
-
-    }
 
     void Tree::display() //help from geeksforgeeks
     {
@@ -268,6 +244,7 @@ namespace family {
         return ans2;
     }
     Tree &Tree::addFather(string child, string father) {
+
         if(cheakIfFatherExist(child,root))
             addFatherRecursive(child, father, root);
                 else
@@ -303,11 +280,40 @@ namespace family {
 
     void Tree::remove(string name) {
         if (root->name==name) throw invalid_argument("cant remove");
-        treenode *node = findNodeName(name, root);
+        treenode *node = findNodeName2(name, root);
 if(node==NULL) throw invalid_argument("cant remove");
-        DeleteNodeAndChildrean(node);
 
+        if (node->left!=NULL&&node->left->name==name)
+        {
+            delete node->left;
+            node->left = NULL;
+            counter--;
+        }
+        if (node->right!=NULL&&node->right->name==name)
+        {
+            delete node->right;
+            node->right = NULL;
+            counter--;
+
+        }
     }
+    treenode *Tree::findNodeName2(string name, treenode *node) {
+        if (node == NULL)
+            return NULL;
+        if (node->left!= NULL && equal(node->left->name, name)||node->right!= NULL && equal(node->right->name, name))
+            return node;
+
+        treenode *found = findNodeName2(name, node->left);
+
+        if (found != NULL)
+            return found;
+
+        return findNodeName2(name, node->right);
+    }
+
+
+
+
 
     string Tree::find(string name) {
         treenode *node = findNodeRank(name, root);

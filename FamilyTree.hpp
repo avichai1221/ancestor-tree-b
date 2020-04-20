@@ -34,13 +34,10 @@ namespace family {
 
         treenode *findNodeName(string name, treenode *node);
 
-        void DeleteNodeAndChildrean(treenode *node);
-
         treenode *findNodeRank(string name, treenode *node);
 
     public:
         Tree(string name);
-       // treenode *creatNode(string name);
        void display();
         void print(treenode* root, int level);
         ~Tree();
@@ -55,8 +52,8 @@ namespace family {
 
         bool cheakIfFatherExist(string child,treenode* node);
   //      void printPostorder();
-
         string relation(string name);
+        treenode *findNodeName2(string name, treenode *node) ;
 
         void remove(string name);
 
