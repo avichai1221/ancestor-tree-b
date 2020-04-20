@@ -178,6 +178,8 @@ namespace family {
 
         if (node != NULL) {
 
+             delete node->left;
+            delete node->right;
             node->left = NULL;
             node->right = NULL;
             node->name = "";
