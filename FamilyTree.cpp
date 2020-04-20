@@ -300,7 +300,7 @@ if(node==NULL) throw invalid_argument("cant remove");
     treenode *Tree::findNodeName2(string name, treenode *node) {
         if (node == NULL)
             return NULL;
-        if (node->left!= NULL && equal(node->left->name, name)||node->right!= NULL && equal(node->right->name, name))
+        if ((node->left!= NULL && equal(node->left->name, name))||(node->right!= NULL && equal(node->right->name, name)))
             return node;
 
         treenode *found = findNodeName2(name, node->left);
